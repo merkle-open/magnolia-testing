@@ -1,0 +1,45 @@
+<!DOCTYPE JCR [
+	<!ELEMENT Map (#PCDATA)>
+	<!ATTLIST Map
+		name CDATA #REQUIRED
+		repositoryName CDATA #REQUIRED
+		workspaceName CDATA #REQUIRED>
+	<!ELEMENT JCR (RepositoryMapping|Repository)*>
+	<!ELEMENT param (#PCDATA)>
+	<!ATTLIST param
+		name CDATA #REQUIRED
+		value CDATA #REQUIRED>
+	<!ELEMENT Repository (param|workspace)*>
+	<!ATTLIST Repository
+		loadOnStartup CDATA #REQUIRED
+		name CDATA #REQUIRED
+		provider CDATA #REQUIRED>
+	<!ELEMENT workspace (#PCDATA)>
+	<!ATTLIST workspace
+		name CDATA #REQUIRED>
+	<!ELEMENT RepositoryMapping (Map)*>
+	]>
+
+<JCR>
+	<RepositoryMapping>
+		<Map name="website" repositoryName="magnolia" workspaceName="website"/>
+		<Map name="config" repositoryName="magnolia" workspaceName="config"/>
+		<Map name="users" repositoryName="magnolia" workspaceName="users"/>
+		<Map name="userroles" repositoryName="magnolia" workspaceName="userroles"/>
+		<Map name="usergroups" repositoryName="magnolia" workspaceName="usergroups"/>
+	</RepositoryMapping>
+
+	<!-- magnolia default repository -->
+	<Repository name="magnolia" provider="info.magnolia.jackrabbit.ProviderImpl" loadOnStartup="true">
+		<param name="configFile" value="${magnolia.repositories.jackrabbit.config}"/>
+		<param name="repositoryHome" value="${magnolia.repositories.home}/magnolia"/>
+		<param name="contextFactoryClass" value="org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory"/>
+		<param name="providerURL" value="localhost"/>
+		<param name="bindName" value="${magnolia.webapp}"/>
+		<workspace name="website"/>
+		<workspace name="config"/>
+		<workspace name="users"/>
+		<workspace name="userroles"/>
+		<workspace name="usergroups"/>
+	</Repository>
+</JCR>

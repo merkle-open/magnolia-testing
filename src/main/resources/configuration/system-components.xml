@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components>
+	<id>system</id>
+	<component>
+		<type>info.magnolia.context.SystemContext</type>
+		<implementation>info.magnolia.context.SingleJCRSessionSystemContext</implementation>
+		<scope>singleton</scope>
+	</component>
+</components>

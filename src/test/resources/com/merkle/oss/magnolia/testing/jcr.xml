@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sv:node xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" sv:name="0">
+	<sv:property sv:name="jcr:primaryType" sv:type="Name">
+		<sv:value>mgnl:component</sv:value>
+	</sv:property>
+	<sv:property sv:name="jcr:uuid" sv:type="String">
+		<sv:value>af5be8b3-405f-4081-8f1d-76b808add588</sv:value>
+	</sv:property>
+	<sv:property sv:name="image_selection" sv:type="String">
+		<sv:value>dam</sv:value>
+	</sv:property>
+	<sv:property sv:name="imagedam" sv:type="String">
+		<sv:value>jcr:f3747f77-6387-47f3-a2b7-2329703e40e0</sv:value>
+	</sv:property>
+	<sv:property sv:name="mgnl:created" sv:type="Date">
+		<sv:value>2024-11-11T10:23:02.753+01:00</sv:value>
+	</sv:property>
+	<sv:property sv:name="mgnl:createdBy" sv:type="String">
+		<sv:value>superuser</sv:value>
+	</sv:property>
+	<sv:property sv:name="mgnl:lastModified" sv:type="Date">
+		<sv:value>2024-11-11T10:23:02.753+01:00</sv:value>
+	</sv:property>
+	<sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+		<sv:value>superuser</sv:value>
+	</sv:property>
+	<sv:property sv:name="mgnl:template" sv:type="String">
+		<sv:value>magnolia-testing:components/Test</sv:value>
+	</sv:property>
+	<sv:property sv:name="someProperty" sv:type="String">
+		<sv:value>some value 42!</sv:value>
+	</sv:property>
+</sv:node>

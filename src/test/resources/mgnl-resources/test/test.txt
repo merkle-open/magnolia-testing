@@ -1,0 +1,1 @@
+somehow magnolia requires at least one mgnl-resource otherwise info.magnolia.resourceloader.classpath.service.impl.base.ClasspathServiceBase logs errors (test still runs fine though)

@@ -1,0 +1,135 @@
+# Magnolia Testing
+
+The spring renderer module makes the Spring-Framework available for Magnolia. <bR>
+Recommended to be used with [dynamic builders modules](https://github.com/merkle-open/magnolia-dynamic-builders). 
+
+## Requirements
+* Java 17
+* Magnolia >= 6.3
+
+## Setup
+
+- Add Maven dependency:
+  ```xml
+  <dependency>
+      <groupId>com.merkle.oss.magnolia</groupId>
+      <artifactId>magnolia-testing</artifactId>
+      <version>0.0.1</version>
+  </dependency>
+  ```
+- Add a magnolia module descriptor in your `src/test/resources/META-INF/magnolia` directory (Bindings can differ from non-test setup).
+
+
+### [Integration Test](src/test/java/com/merkle/oss/magnolia/testing/SampleIntegrationTest.java)
+Creates guice context and starts all magnolia modules. Can import jcr exports (xml files) into repository using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.
+```java
+import static io.smallrye.common.constraint.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.repository.RepositoryConstants;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.merkle.oss.magnolia.testing.MagnoliaIntegrationTestExtension;
+import com.merkle.oss.magnolia.testing.repository.Repository;
+
+@ExtendWith(MagnoliaIntegrationTestExtension.class)
+class SampleIntegrationTest {
+
+    @Repository(workspaces = {@Repository.Workspace(name = RepositoryConstants.WEBSITE, xml = "jcr.xml")})
+    @Test
+    void someMethod() throws RepositoryException {
+        final Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
+        final Node node = session.getRootNode().getNode("0");
+        final SomeInterface someInterface = Components.getComponent(SomeInterface.class);
+        assertEquals("some value 42!", someInterface.someMethod(node));
+        session.logout();
+    }
+}
+```
+
+### [Guice Context Test](src/test/java/com/merkle/oss/magnolia/testing/SampleGuiceContextTest.java)
+Only creates guice context, but doesn't start magnolia modules. Can import jcr exports (xml files) into repository, create workspaces and import nodeTypes using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.
+
+```java
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.repository.RepositoryConstants;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.merkle.oss.magnolia.testing.MagnoliaGuiceContextTestExtension;
+import com.merkle.oss.magnolia.testing.repository.Repository;
+
+@Repository(
+        nodeTypes = { @Repository.NodeTypesDefinition(cnd = "/mgnl-nodetypes/testing-nodetypes.cnd") },
+        workspaces = { @Repository.Workspace(name = "testing", xml = "jcr-custom-nodetype.xml", create = true) }
+)
+@ExtendWith(MagnoliaGuiceContextTestExtension.class)
+class SampleGuiceContextTest {
+
+  @Test
+  void someMethod() throws RepositoryException {
+    final Session session = MgnlContext.getJCRSession("testing");
+    final Node node = session.getRootNode().getNode("0");
+    final SomeInterface someInterface = Components.getComponent(SomeInterface.class);
+    assertEquals("some value 42!", someInterface.someMethod(node));
+  }
+}
+
+```
+### Custom Magnolia properties
+Custom property files can be specified using the [`@TestConfiguration`](src/main/java/com/merkle/oss/magnolia/testing/configuration/TestConfiguration.java) annotation.
+
+```java
+import com.merkle.oss.magnolia.testing.MagnoliaGuiceContextTestExtension;
+import com.merkle.oss.magnolia.testing.configuration.TestConfiguration;
+
+@TestConfiguration(magnoliaProperties = "/magnolia-testing.properties")
+@ExtendWith(MagnoliaGuiceContextTestExtension.class)
+class SampleGuiceContextTest {}
+```
+
+#### Placeholders
+- `${resource.home}` is replaced by your projects `src/test/resources` directory.
+  - e.g. `magnolia.repositories.config=${resource.home}/repositories.xml`
+- `classpath:` is replaced by any classpath resource
+  - e.g. `classpath:/repository/InMemoryJcrRepositoryConfiguration.xml`
+- `magnolia.app.rootdir` is replaced by a random generated temporary folder (for each test)
+  - e.g. `magnolia.home=${magnolia.app.rootdir}`
+
+### Test specific component bindings
+Test specific component bindings can be configured using the [`@TestConfiguration`](src/main/java/com/merkle/oss/magnolia/testing/configuration/TestConfiguration.java) annotation.
+
+```java
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.merkle.oss.magnolia.testing.MagnoliaIntegrationTestExtension;
+import com.merkle.oss.magnolia.testing.configuration.TestConfiguration;
+
+@ExtendWith(MagnoliaIntegrationTestExtension.class)
+class SampleGuiceContextTest {
+
+  @Test
+  @TestConfiguration(components = {
+          @TestConfiguration.Component(type = SomeInterface.class, implementation = SomeInterface.SomeOtherImplementation.class)
+  })
+  void someOtherMethod() {
+    ...
+  }
+}
+```

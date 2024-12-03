@@ -1,0 +1,5 @@
+<'mgnl'='http://www.magnolia-cms.com/jcr/mgnl'>
+<'testing'='https://www.zg.ch/jcr/1.0/zug'>
+
+[testing:test] > mgnl:content
+ orderable

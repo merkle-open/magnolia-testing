@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+	<name>magnolia-testing</name>
+	<displayName>Magnolia testing</displayName>
+	<description>magnolia testing oss repo</description>
+	<class>com.merkle.oss.magnolia.testing.SomeModule</class>
+	<version>0.0.1</version>
+
+	<components>
+		<id>main</id>
+		<configurer>
+			<class>com.merkle.oss.magnolia.testing.configuration.TestingGuiceComponentConfigurer</class>
+		</configurer>
+		<component>
+			<type>com.merkle.oss.magnolia.testing.SomeInterface</type>
+			<implementation>com.merkle.oss.magnolia.testing.SomeInterface$SomeImplementation</implementation>
+		</component>
+	</components>
+
+	<dependencies>
+		<dependency>
+			<name>core</name>
+			<version>*/*</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<name>magnolia</name>
+			<workspaces>
+				<workspace>testing</workspace>
+			</workspaces>
+			<nodeTypeFile>/mgnl-nodetypes/testing-nodetypes.cnd</nodeTypeFile>
+		</repository>
+	</repositories>
+</module>

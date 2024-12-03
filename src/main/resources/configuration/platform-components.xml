@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components>
+	<id>platform</id>
+	<component>
+		<type>info.magnolia.context.SystemContext</type>
+		<implementation>info.magnolia.context.SingleJCRSessionSystemContext</implementation>
+		<scope>singleton</scope>
+	</component>
+	<component>
+		<type>info.magnolia.module.ModuleManager</type>
+		<implementation>com.merkle.oss.magnolia.testing.module.TestModuleManager</implementation>
+		<scope>singleton</scope>
+	</component>
+	<type-mapping>
+		<type>info.magnolia.setup.CoreModuleVersionHandler</type>
+		<implementation>com.merkle.oss.magnolia.testing.module.TestCoreModuleVersionHandler</implementation>
+	</type-mapping>
+</components>
