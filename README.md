@@ -1,7 +1,6 @@
 # Magnolia Testing
 
-The spring renderer module makes the Spring-Framework available for Magnolia. <bR>
-Recommended to be used with [dynamic builders modules](https://github.com/merkle-open/magnolia-dynamic-builders). 
+Provides integration testing capabilities for magnolia projects. 
 
 ## Requirements
 * Java 17
