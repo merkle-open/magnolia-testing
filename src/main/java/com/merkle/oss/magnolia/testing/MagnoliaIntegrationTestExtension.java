@@ -13,7 +13,7 @@ public class MagnoliaIntegrationTestExtension implements BeforeEachCallback, Aft
 	@Override
 	public void beforeEach(final ExtensionContext context) throws Exception {
 		magnoliaIntegrationTestInitializer.init(context);
-		magnoliaIntegrationTestInitializer.start();
+		magnoliaIntegrationTestInitializer.start(true);
 		new RepositoryUtil().load(context);
 	}
 

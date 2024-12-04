@@ -1,12 +1,10 @@
 package com.merkle.oss.magnolia.testing.configuration;
 
-import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.User;
+import info.magnolia.cms.filters.MgnlMainFilter;
+import info.magnolia.cms.util.CustomFilterConfig;
 import info.magnolia.context.AbstractSystemContext;
-import info.magnolia.context.DefaultRepositoryStrategy;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
-import info.magnolia.context.WebContext;
 import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.init.MagnoliaServletContextListener;
 import info.magnolia.license.LicenseManager;
@@ -21,7 +19,6 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.repository.RepositoryManager;
 import info.magnolia.test.TestMagnoliaConfigurationProperties;
-import info.magnolia.test.mock.MockWebContext;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,11 +26,11 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -43,7 +40,8 @@ import com.google.inject.Stage;
 import com.machinezoo.noexception.Exceptions;
 import com.merkle.oss.magnolia.testing.module.LicenseManagerProvider;
 import com.merkle.oss.magnolia.testing.properties.IntegrationTestMagnoliaConfigurationProperties;
-import com.merkle.oss.magnolia.testing.servlet.MockServletContext;
+import com.merkle.oss.magnolia.testing.servlet.MockFilterChain;
+import com.merkle.oss.magnolia.testing.servlet.ServletContextProvider;
 
 public class MagnoliaIntegrationTestInitializer {
 
@@ -70,24 +68,34 @@ public class MagnoliaIntegrationTestInitializer {
             throw new RuntimeException("Failed to init: " + e.getErrorMessages(), e);
         }
         watch.stop();
-        System.out.println("Initialization took "+watch.getDuration().toMillis()+"ms");
+        System.out.println("Initialization took " + watch.getDuration().toMillis() + "ms");
     }
 
     public void destroy() {
-        ((AbstractSystemContext)Components.getComponent(SystemContext.class)).getRepositoryStrategy().release();
+        ((AbstractSystemContext) Components.getComponent(SystemContext.class)).getRepositoryStrategy().release();
         MgnlContext.setInstance(null);
     }
 
-    public void start() throws ModuleManagementException {
+    public void start(final boolean executeFilterChain) throws ModuleManagementException, ServletException, IOException {
         final StopWatch watch = new StopWatch();
         watch.start();
+        System.setProperty("productionMode", "true"); //com.vaadin.server.Constants.SERVLET_PARAMETER_PRODUCTION_MODE
         final ModuleManager moduleManager = Components.getComponent(ModuleManager.class);
         moduleManager.checkForInstallOrUpdates();
         moduleManager.performInstallOrUpdate();
         moduleManager.startModules();
-        MgnlContext.setInstance(getUserContext());
+        if(executeFilterChain) {
+            executeFilterChain();
+        }
         watch.stop();
-        System.out.println("Start took "+watch.getDuration().toMillis()+"ms");
+        System.out.println("Start took " + watch.getDuration().toMillis() + "ms");
+    }
+
+    private void executeFilterChain() throws ServletException, IOException {
+        final ServletContextProvider servletContextProvider = Components.getComponent(ServletContextProvider.class);
+        final MgnlMainFilter mainFilter = new MgnlMainFilter();
+        mainFilter.init(new CustomFilterConfig("magnoliaFilterChain", Components.getComponent(ServletContext.class)));
+        mainFilter.doFilter(servletContextProvider.getRequest(), servletContextProvider.getResponse(), new MockFilterChain());
     }
 
     public void stop() {
@@ -95,19 +103,10 @@ public class MagnoliaIntegrationTestInitializer {
         watch.start();
         final ModuleManager moduleManager = Components.getComponent(ModuleManager.class);
         moduleManager.stopModules();
-        ((AbstractSystemContext)Components.getComponent(SystemContext.class)).getRepositoryStrategy().release();
+        ((AbstractSystemContext) Components.getComponent(SystemContext.class)).getRepositoryStrategy().release();
         MgnlContext.setInstance(null);
         watch.stop();
-        System.out.println("Stop took "+watch.getDuration().toMillis()+"ms");
-    }
-
-    private WebContext getUserContext() {
-        final RepositoryManager repositoryManager = Components.getComponent(RepositoryManager.class);
-        final MockWebContext webContext = new MockWebContext();
-        final User user = Components.getComponent(SecuritySupport.class).getUserManager().getUser("superuser");
-        webContext.setUser(user);
-        webContext.setRepositoryStrategy(new DefaultRepositoryStrategy(repositoryManager, webContext));
-        return webContext;
+        System.out.println("Stop took " + watch.getDuration().toMillis() + "ms");
     }
 
     private GuiceComponentProvider getPlatformComponentProvider(final Path appRootDir, final ExtensionContext extensionContext) throws IOException {
@@ -116,7 +115,8 @@ public class MagnoliaIntegrationTestInitializer {
                 MagnoliaServletContextListener.DEFAULT_PLATFORM_COMPONENTS_CONFIG_LOCATION,
                 "/configuration/platform-components.xml"
         ), "platform");
-        config.registerInstance(ServletContext.class, new MockServletContext());
+
+        config.registerProvider(ServletContext.class, ServletContextProvider.class);
         applyAnnotationComponents(extensionContext, TestConfiguration.Component.Provider.PLATFORM, config);
         config.registerInstance(MagnoliaConfigurationProperties.class, properties);
         config.registerInstance(ExtensionContext.class, extensionContext);

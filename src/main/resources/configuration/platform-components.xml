@@ -11,6 +11,10 @@
 		<implementation>com.merkle.oss.magnolia.testing.module.TestModuleManager</implementation>
 		<scope>singleton</scope>
 	</component>
+	<component>
+		<type>com.merkle.oss.magnolia.testing.servlet.ServletContextProvider</type>
+		<implementation>com.merkle.oss.magnolia.testing.servlet.ServletContextProvider$DefaultServletContextProvider</implementation>
+	</component>
 	<type-mapping>
 		<type>info.magnolia.setup.CoreModuleVersionHandler</type>
 		<implementation>com.merkle.oss.magnolia.testing.module.TestCoreModuleVersionHandler</implementation>

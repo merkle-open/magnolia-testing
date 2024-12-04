@@ -13,7 +13,7 @@ public class MagnoliaIntegrationBeforeAllTestExtension implements BeforeAllCallb
 	@Override
 	public void beforeAll(final ExtensionContext context) throws Exception {
 		magnoliaIntegrationTestInitializer.init(context);
-		magnoliaIntegrationTestInitializer.start();
+		magnoliaIntegrationTestInitializer.start(true);
 		new RepositoryUtil().load(context);
 	}
 
