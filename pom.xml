@@ -38,6 +38,7 @@
   <properties>
     <!--	mvn versions:display-property-updates	-->
     <magnolia.version>6.3.1</magnolia.version>
+    <magnolia.license.version>2.0.0</magnolia.license.version>
     <jsr305.nullable.version>3.0.2</jsr305.nullable.version>
     <!--Test dependency versions-->
     <junit.version>5.11.1</junit.version>
@@ -66,6 +67,11 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>info.magnolia</groupId>
+        <artifactId>magnolia-license</artifactId>
+        <version>${magnolia.license.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>jsr305</artifactId>
         <version>${jsr305.nullable.version}</version>
@@ -83,6 +89,10 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-license</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>

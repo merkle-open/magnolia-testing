@@ -9,6 +9,7 @@ import info.magnolia.context.SystemContext;
 import info.magnolia.context.WebContext;
 import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.init.MagnoliaServletContextListener;
+import info.magnolia.license.LicenseManager;
 import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleManager;
 import info.magnolia.module.ModuleRegistry;
@@ -40,6 +41,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import com.google.inject.CreationException;
 import com.google.inject.Stage;
 import com.machinezoo.noexception.Exceptions;
+import com.merkle.oss.magnolia.testing.module.LicenseManagerProvider;
 import com.merkle.oss.magnolia.testing.properties.IntegrationTestMagnoliaConfigurationProperties;
 import com.merkle.oss.magnolia.testing.servlet.MockServletContext;
 
@@ -144,8 +146,9 @@ public class MagnoliaIntegrationTestInitializer {
                 "main",
                 parent.getComponent(ModuleRegistry.class).getModuleDefinitions()
         );
-        applyAnnotationComponents(extensionContext, TestConfiguration.Component.Provider.MAIN, config);
         config.registerInstance(MagnoliaConfigurationProperties.class, properties);
+        config.registerProvider(LicenseManager.class, LicenseManagerProvider.class);
+        applyAnnotationComponents(extensionContext, TestConfiguration.Component.Provider.MAIN, config);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(config);
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
