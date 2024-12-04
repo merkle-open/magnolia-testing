@@ -61,6 +61,9 @@ public class MagnoliaIntegrationTestInitializer {
 
             final IntegrationTestMagnoliaConfigurationProperties properties = platformComponentProvider.newInstance(IntegrationTestMagnoliaConfigurationProperties.class, appRootDir);
             properties.init();
+            //ConfigLoader.JAAS_PROPERTYNAME
+            System.setProperty("java.security.auth.login.config", properties.getProperty("jaas.config"));
+
             final GuiceComponentProvider systemComponentProvider = getSystemComponentProvider(extensionContext, platformComponentProvider, properties);
             getMainComponentProvider(extensionContext, systemComponentProvider, properties);
         } catch (CreationException e) {

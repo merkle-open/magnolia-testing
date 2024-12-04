@@ -92,6 +92,10 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-jaas</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
       <artifactId>magnolia-license</artifactId>
     </dependency>
     <dependency>
