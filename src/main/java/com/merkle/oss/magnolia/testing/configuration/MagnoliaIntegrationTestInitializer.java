@@ -1,5 +1,6 @@
 package com.merkle.oss.magnolia.testing.configuration;
 
+import info.magnolia.cms.core.SystemProperty;
 import info.magnolia.cms.filters.MgnlMainFilter;
 import info.magnolia.cms.util.CustomFilterConfig;
 import info.magnolia.context.AbstractSystemContext;
@@ -59,6 +60,8 @@ public class MagnoliaIntegrationTestInitializer {
 
             final IntegrationTestMagnoliaConfigurationProperties properties = platformComponentProvider.newInstance(IntegrationTestMagnoliaConfigurationProperties.class, appRootDir);
             properties.init();
+            // Connect legacy properties to the MagnoliaConfigurationProperties object
+            SystemProperty.setMagnoliaConfigurationProperties(properties);
             //ConfigLoader.JAAS_PROPERTYNAME
             System.setProperty("java.security.auth.login.config", properties.getProperty("jaas.config"));
 
