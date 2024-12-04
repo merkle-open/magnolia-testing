@@ -20,7 +20,8 @@ Provides integration testing capabilities for magnolia projects.
 
 
 ### [Integration Test](src/test/java/com/merkle/oss/magnolia/testing/SampleIntegrationTest.java)
-Creates guice context and starts all magnolia modules. Can import jcr exports (xml files) into repository using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.
+Creates guice context and starts all magnolia modules. Can import jcr exports (xml files) into repository using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.<br>
+There's also a `MagnoliaIntegrationBeforeAllTestExtension` which runs all tests in the same context (for better performance).
 ```java
 import static io.smallrye.common.constraint.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,7 +56,8 @@ class SampleIntegrationTest {
 ```
 
 ### [Guice Context Test](src/test/java/com/merkle/oss/magnolia/testing/SampleGuiceContextTest.java)
-Only creates guice context, but doesn't start magnolia modules. Can import jcr exports (xml files) into repository, create workspaces and import nodeTypes using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.
+Only creates guice context, but doesn't start magnolia modules. Can import jcr exports (xml files) into repository, create workspaces and import nodeTypes using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.<br>
+There's also a `MagnoliaGuiceContextBeforeAllTestExtension` which runs all tests in the same context (for better performance).
 
 ```java
 import static org.junit.jupiter.api.Assertions.assertEquals;

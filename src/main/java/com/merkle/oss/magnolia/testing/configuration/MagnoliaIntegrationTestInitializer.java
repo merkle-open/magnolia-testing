@@ -184,8 +184,8 @@ public class MagnoliaIntegrationTestInitializer {
     }
 
     private Stream<TestConfiguration.Component> getComponents(final ExtensionContext extensionContext) {
-        return Optional.ofNullable(extensionContext.getRequiredTestMethod()).map(method -> method.getAnnotation(TestConfiguration.class)).or(() ->
-                Optional.ofNullable(extensionContext.getRequiredTestClass()).map(clazz -> clazz.getAnnotation(TestConfiguration.class))
+        return extensionContext.getTestMethod().map(method -> method.getAnnotation(TestConfiguration.class)).or(() ->
+                extensionContext.getTestClass().map(clazz -> clazz.getAnnotation(TestConfiguration.class))
         ).stream().map(TestConfiguration::components).flatMap(Arrays::stream);
     }
 }

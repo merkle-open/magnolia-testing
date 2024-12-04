@@ -19,6 +19,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
+import org.junit.jupiter.api.extension.ExtensionContext;
+
 public class RepositoryUtil {
     private final RepositoryManager repositoryManager;
 
@@ -30,14 +32,12 @@ public class RepositoryUtil {
         this.repositoryManager = repositoryManager;
     }
 
-    public void load(final Method testMethod) throws IOException, RepositoryException {
-        final Class<?> testClass = testMethod.getDeclaringClass();
-        final Repository repository = Optional
-                .ofNullable(testMethod.getAnnotation(Repository.class))
-                .or(() -> Optional.ofNullable(testClass.getAnnotation(Repository.class)))
+    public void load(final ExtensionContext extensionContext) throws IOException, RepositoryException {
+        final Repository repository = extensionContext.getTestMethod().map(method -> method.getAnnotation(Repository.class))
+                .or(() -> extensionContext.getTestClass().map(clazz -> clazz.getAnnotation(Repository.class)))
                 .orElse(null);
         if(repository != null) {
-            load(testClass, repository);
+            load(extensionContext.getRequiredTestClass(), repository);
         }
     }
 

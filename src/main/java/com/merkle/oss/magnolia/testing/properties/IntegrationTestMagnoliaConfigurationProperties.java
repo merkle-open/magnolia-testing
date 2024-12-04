@@ -66,8 +66,8 @@ public class IntegrationTestMagnoliaConfigurationProperties extends DefaultMagno
 
     private static Stream<String> getCustomProperties(final ExtensionContext extensionContext) {
         return Stream
-                .of(extensionContext.getRequiredTestMethod(), extensionContext.getRequiredTestClass())
-                .map(method -> Optional.ofNullable(method.getAnnotation(TestConfiguration.class)))
+                .of(extensionContext.getTestMethod(), extensionContext.getTestClass())
+                .map(method -> method.map(m -> m.getAnnotation(TestConfiguration.class)))
                 .flatMap(Optional::stream)
                 .map(TestConfiguration::magnoliaProperties)
                 .flatMap(Arrays::stream);

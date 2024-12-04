@@ -158,13 +158,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${mvn.surefire.plugin.version}</version>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
