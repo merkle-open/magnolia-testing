@@ -98,8 +98,7 @@
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-license</artifactId>
       <version>${magnolia.license.version}</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/magnolia-license-2.0.0.jar</systemPath>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>

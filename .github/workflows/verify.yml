@@ -25,5 +25,7 @@ jobs:
               "username": "${{secrets.MGNL_NEXUS_USER}}",
               "password": "${{secrets.MGNL_NEXUS_PASS}}"
             }]
+      - name: Test
+        run: mvn dependency:get -Dartifact=info.magnolia:magnolia-license:2.0.0
       - name: Maven verify
         run: mvn verify --batch-mode
