@@ -64,8 +64,10 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+      - name: Test
+        run: mvn dependency:get -Dartifact=info.magnolia:magnolia-license:2.0.0
       - name: Release Maven package
-        run: mvn deploy -Pdeploy
+        run: mvn deploy -Pdeploy -U
         env:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_USER }}
           MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
