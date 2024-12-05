@@ -63,8 +63,8 @@ jobs:
               "username": "${{secrets.MGNL_NEXUS_USER}}",
               "password": "${{secrets.MGNL_NEXUS_PASS}}"
             }]
-      - name: Test
-        run: mvn dependency:get -Dartifact=info.magnolia:magnolia-license:2.0.0
+      - name: Download dependencies #somehow required by the magnolia-license dependency for the deploy !?
+        run: mvn dependency:copy-dependencies
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
