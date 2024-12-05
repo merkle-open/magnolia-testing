@@ -139,6 +139,7 @@ public class MagnoliaIntegrationTestInitializer {
                 )
         );
         applyAnnotationComponents(extensionContext, TestConfiguration.Component.Provider.SYSTEM, config);
+        config.registerInstance(IntegrationTestMagnoliaConfigurationProperties.class, properties);
         config.registerInstance(MagnoliaConfigurationProperties.class, properties);
         final GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(config);
