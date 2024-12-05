@@ -27,11 +27,6 @@ jobs:
               "id": "magnolia.enterprise.group",
               "username": "${{secrets.MGNL_NEXUS_USER}}",
               "password": "${{secrets.MGNL_NEXUS_PASS}}"
-            },
-            {
-              "id": "magnolia.public.group",
-              "username": "${{secrets.MGNL_NEXUS_USER}}",
-              "password": "${{secrets.MGNL_NEXUS_PASS}}"
             }]
       - name: Maven verify
         run: mvn verify --batch-mode
