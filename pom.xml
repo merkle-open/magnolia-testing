@@ -6,7 +6,7 @@
 
   <groupId>com.merkle.oss.magnolia</groupId>
   <artifactId>magnolia-testing</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
   <description>Magnolia testing</description>
@@ -38,6 +38,7 @@
   <properties>
     <!--	mvn versions:display-property-updates	-->
     <magnolia.version>6.3.1</magnolia.version>
+    <magnolia.license.version>2.0.0</magnolia.license.version>
     <jsr305.nullable.version>3.0.2</jsr305.nullable.version>
     <!--Test dependency versions-->
     <junit.version>5.11.1</junit.version>
@@ -64,13 +65,6 @@
         <version>${magnolia.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia</groupId>
-        <artifactId>magnolia-license</artifactId>
-        <version>2.0.0</version>
-        <scope>system</scope>
-        <systemPath>${project.basedir}/lib/magnolia-license-2.0.0.jar</systemPath>
       </dependency>
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
@@ -103,6 +97,9 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-license</artifactId>
+      <version>${magnolia.license.version}</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/magnolia-license-2.0.0.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
