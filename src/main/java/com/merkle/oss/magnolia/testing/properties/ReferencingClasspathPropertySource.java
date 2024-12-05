@@ -4,7 +4,6 @@ import info.magnolia.init.properties.ClasspathPropertySource;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
@@ -25,11 +24,12 @@ public class ReferencingClasspathPropertySource extends ClasspathPropertySource 
         if(value != null && value.startsWith("classpath:")) {
             try {
                 final String classpathResource = StringUtils.removeStart(value, "classpath:");
-                final String extension = FilenameUtils.getExtension(classpathResource);
-                final String baseName = FilenameUtils.getBaseName(classpathResource);
-                final File tempFile = Files.createTempFile(appRootDir, baseName, "."+extension).toFile();
-                FileUtils.copyURLToFile(getClass().getResource(classpathResource), tempFile);
-                return tempFile.getAbsolutePath();
+                final String name = FilenameUtils.getName(classpathResource);
+                final File file = appRootDir.resolve(name).toFile();
+                if(!file.exists()) {
+                    FileUtils.copyURLToFile(getClass().getResource(classpathResource), file);
+                }
+                return file.getAbsolutePath();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
