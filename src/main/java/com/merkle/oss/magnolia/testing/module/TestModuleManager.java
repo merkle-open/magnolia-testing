@@ -13,15 +13,19 @@ import info.magnolia.module.model.reader.DependencyChecker;
 import info.magnolia.module.model.reader.ModuleDefinitionReader;
 import info.magnolia.repository.RepositoryManager;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.merkle.oss.magnolia.testing.configuration.TestModuleVersionHandler;
 
 public class TestModuleManager extends ModuleManagerImpl {
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final InstallContextImpl installContext;
 
     @Inject
@@ -57,6 +61,6 @@ public class TestModuleManager extends ModuleManagerImpl {
         watch.start();
         super.startModule(moduleInstance, moduleDefinition, lifecycleContext);
         watch.stop();
-        System.out.println("Starting module " + moduleDefinition.getName() + " took " + watch.getDuration().toMillis() + "ms");
+        LOG.debug("Starting module {} took {}ms", moduleDefinition.getName(),  watch.getDuration().toMillis());
     }
 }

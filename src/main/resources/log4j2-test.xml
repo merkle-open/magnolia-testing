@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %-5p %-50.50c: %m%n"/>
+        </Console>
+	</Appenders>
+    <Loggers>
+        <!-- Magnolia categories -->
+        <Logger name="info.magnolia" level="WARN"/>
+
+        <!-- Merkle -->
+        <Logger name="com.merkle.oss.magnolia" level="WARN"/>
+        <Logger name="com.merkle.oss.magnolia.testing" level="INFO"/>
+
+        <!-- 3rd party -->
+        <logger name="org.atmosphere" level="ERROR" />
+    </Loggers>
+</Configuration>

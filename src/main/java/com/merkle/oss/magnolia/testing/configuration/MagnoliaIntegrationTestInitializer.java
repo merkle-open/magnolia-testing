@@ -22,19 +22,25 @@ import info.magnolia.repository.RepositoryManager;
 import info.magnolia.test.TestMagnoliaConfigurationProperties;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.LogManager;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.CreationException;
 import com.google.inject.Stage;
@@ -45,6 +51,7 @@ import com.merkle.oss.magnolia.testing.servlet.MockFilterChain;
 import com.merkle.oss.magnolia.testing.servlet.ServletContextProvider;
 
 public class MagnoliaIntegrationTestInitializer {
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public void init(final ExtensionContext extensionContext) throws Exception {
         final StopWatch watch = new StopWatch();
@@ -71,7 +78,7 @@ public class MagnoliaIntegrationTestInitializer {
             throw new RuntimeException("Failed to init: " + e.getErrorMessages(), e);
         }
         watch.stop();
-        System.out.println("Initialization took " + watch.getDuration().toMillis() + "ms");
+        LOG.debug("Initialization took {}ms", watch.getDuration().toMillis());
     }
 
     public void destroy() {
@@ -83,6 +90,8 @@ public class MagnoliaIntegrationTestInitializer {
         final StopWatch watch = new StopWatch();
         watch.start();
         System.setProperty("productionMode", "true"); //com.vaadin.server.Constants.SERVLET_PARAMETER_PRODUCTION_MODE
+        LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.install();
         final ModuleManager moduleManager = Components.getComponent(ModuleManager.class);
         moduleManager.checkForInstallOrUpdates();
         moduleManager.performInstallOrUpdate();
@@ -91,7 +100,7 @@ public class MagnoliaIntegrationTestInitializer {
             executeFilterChain();
         }
         watch.stop();
-        System.out.println("Start took " + watch.getDuration().toMillis() + "ms");
+        LOG.debug("Start took {}ms", watch.getDuration().toMillis());
     }
 
     private void executeFilterChain() throws ServletException, IOException {
@@ -109,7 +118,7 @@ public class MagnoliaIntegrationTestInitializer {
         ((AbstractSystemContext) Components.getComponent(SystemContext.class)).getRepositoryStrategy().release();
         MgnlContext.setInstance(null);
         watch.stop();
-        System.out.println("Stop took " + watch.getDuration().toMillis() + "ms");
+        LOG.debug("Stop took {}ms", watch.getDuration().toMillis());
     }
 
     private GuiceComponentProvider getPlatformComponentProvider(final Path appRootDir, final ExtensionContext extensionContext) throws IOException {

@@ -40,9 +40,9 @@
     <magnolia.version>6.3.1</magnolia.version>
     <magnolia.license.version>2.0.0</magnolia.license.version>
     <jsr305.nullable.version>3.0.2</jsr305.nullable.version>
-    <!--Test dependency versions-->
     <junit.version>5.11.1</junit.version>
     <mockito.version>5.14.0</mockito.version>
+    <slf4j.bridge.version>2.0.16</slf4j.bridge.version>
 
     <!-- Maven Plugins -->
     <mvn.compiler.plugin.version>3.13.0</mvn.compiler.plugin.version>
@@ -80,6 +80,11 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${slf4j.bridge.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -131,6 +136,10 @@
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
     </dependency>
   </dependencies>
 
