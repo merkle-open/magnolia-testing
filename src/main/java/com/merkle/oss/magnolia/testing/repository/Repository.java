@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.jcr.ImportUUIDBehavior;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Inherited
@@ -18,6 +20,8 @@ public @interface Repository {
 		String xml();
 		String repositoryId() default "magnolia";
 		boolean create() default false;
+		String path() default "/";
+		int importUUIDBehavior() default ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW;
 	}
 
 	@interface NodeTypesDefinition {

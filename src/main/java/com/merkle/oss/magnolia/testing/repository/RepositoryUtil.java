@@ -49,7 +49,7 @@ public class RepositoryUtil {
                 repositoryManager.loadWorkspace(workspace.repositoryId(), workspace.name());
             }
             final Session session = repositoryManager.getSystemSession(workspace.name());
-            session.importXML("/", testClass.getResourceAsStream(workspace.xml()), ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+            session.importXML(workspace.path(), testClass.getResourceAsStream(workspace.xml()), workspace.importUUIDBehavior());
             session.save();
             session.logout();
         }
