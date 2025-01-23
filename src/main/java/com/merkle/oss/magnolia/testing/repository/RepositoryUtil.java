@@ -6,7 +6,6 @@ import info.magnolia.repository.RepositoryManager;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
-import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -15,9 +14,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.merkle.oss.magnolia.testing.Context;
 
 public class RepositoryUtil {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -31,12 +31,9 @@ public class RepositoryUtil {
         this.repositoryManager = repositoryManager;
     }
 
-    public void load(final ExtensionContext extensionContext) throws IOException, RepositoryException {
-        final Repository repository = extensionContext.getTestMethod().map(method -> method.getAnnotation(Repository.class))
-                .or(() -> extensionContext.getTestClass().map(clazz -> clazz.getAnnotation(Repository.class)))
-                .orElse(null);
-        if(repository != null) {
-            load(extensionContext.getRequiredTestClass(), repository);
+    public void load(final Context context) throws IOException, RepositoryException {
+        for(final Repository repository: context.getAnnotation(Repository.class).toList()) {
+            load(context.getClazz(), repository);
         }
     }
 

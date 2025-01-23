@@ -11,14 +11,15 @@ public class MagnoliaIntegrationBeforeAllTestExtension implements BeforeAllCallb
 	private final MagnoliaIntegrationTestInitializer magnoliaIntegrationTestInitializer = new MagnoliaIntegrationTestInitializer();
 
 	@Override
-	public void beforeAll(final ExtensionContext context) throws Exception {
+	public void beforeAll(final ExtensionContext testContext) throws Exception {
+		final Context.TestContextWrapper context = new Context.TestContextWrapper(testContext);
 		magnoliaIntegrationTestInitializer.init(context);
 		magnoliaIntegrationTestInitializer.start(true);
 		new RepositoryUtil().load(context);
 	}
 
 	@Override
-	public void afterAll(final ExtensionContext context) {
+	public void afterAll(final ExtensionContext testContext) {
 		magnoliaIntegrationTestInitializer.stop();
 		magnoliaIntegrationTestInitializer.destroy();
 	}

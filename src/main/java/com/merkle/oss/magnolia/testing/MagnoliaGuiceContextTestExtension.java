@@ -11,13 +11,14 @@ public class MagnoliaGuiceContextTestExtension implements BeforeEachCallback, Af
 	private final MagnoliaIntegrationTestInitializer magnoliaIntegrationTestInitializer = new MagnoliaIntegrationTestInitializer();
 
 	@Override
-	public void beforeEach(final ExtensionContext context) throws Exception {
+	public void beforeEach(final ExtensionContext testContext) throws Exception {
+		final Context.TestContextWrapper context = new Context.TestContextWrapper(testContext);
 		magnoliaIntegrationTestInitializer.init(context);
 		new RepositoryUtil().load(context);
 	}
 
 	@Override
-	public void afterEach(final ExtensionContext context) {
+	public void afterEach(final ExtensionContext testContext) {
 		magnoliaIntegrationTestInitializer.destroy();
 	}
 }

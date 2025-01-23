@@ -16,15 +16,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-
 import com.google.inject.Inject;
 import com.machinezoo.noexception.Exceptions;
+import com.merkle.oss.magnolia.testing.Context;
 import com.merkle.oss.magnolia.testing.configuration.TestConfiguration;
 
 public class IntegrationTestMagnoliaConfigurationProperties extends DefaultMagnoliaConfigurationProperties {
     private final Path appRootDir;
-    private final ExtensionContext extensionContext;
+    private final Context context;
 
     @Inject
     public IntegrationTestMagnoliaConfigurationProperties(
@@ -34,16 +33,16 @@ public class IntegrationTestMagnoliaConfigurationProperties extends DefaultMagno
             final SystemPropertySource systemPropertySource,
             final EnvironmentPropertySource environmentPropertySource,
             final Path appRootDir,
-            final ExtensionContext extensionContext
+            final Context context
     ) {
         super(initPaths, moduleRegistry, resolver, systemPropertySource, environmentPropertySource);
         this.appRootDir = appRootDir;
-        this.extensionContext = extensionContext;
+        this.context = context;
     }
 
     @Override
     public void init() throws Exception {
-        sources.addAll(getInitialPropertySources(appRootDir, extensionContext));
+        sources.addAll(getInitialPropertySources(appRootDir, context));
         super.init();
     }
 
@@ -52,9 +51,9 @@ public class IntegrationTestMagnoliaConfigurationProperties extends DefaultMagno
         return super.parseStringValue(strVal, visitedPlaceholders);
     }
 
-    public static List<PropertySource> getInitialPropertySources(final Path appRootDir, final ExtensionContext extensionContext) throws IOException {
+    public static List<PropertySource> getInitialPropertySources(final Path appRootDir, final Context context) throws IOException {
         return Stream.concat(
-                getCustomProperties(extensionContext)
+                getCustomProperties(context)
                         .filter(path -> IntegrationTestMagnoliaConfigurationProperties.class.getResource(path) != null)
                         .map(path -> Exceptions.wrap().get(() -> new ReferencingClasspathPropertySource(path, appRootDir))),
                 Stream.of(
@@ -64,11 +63,8 @@ public class IntegrationTestMagnoliaConfigurationProperties extends DefaultMagno
         ).toList();
     }
 
-    private static Stream<String> getCustomProperties(final ExtensionContext extensionContext) {
-        return Stream
-                .of(extensionContext.getTestMethod(), extensionContext.getTestClass())
-                .map(method -> method.map(m -> m.getAnnotation(TestConfiguration.class)))
-                .flatMap(Optional::stream)
+    private static Stream<String> getCustomProperties(final Context context) {
+        return context.getAnnotation(TestConfiguration.class)
                 .map(TestConfiguration::magnoliaProperties)
                 .flatMap(Arrays::stream);
     }

@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.LogManager;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,6 +46,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.CreationException;
 import com.google.inject.Stage;
 import com.machinezoo.noexception.Exceptions;
+import com.merkle.oss.magnolia.testing.Context;
 import com.merkle.oss.magnolia.testing.module.LicenseManagerProvider;
 import com.merkle.oss.magnolia.testing.properties.IntegrationTestMagnoliaConfigurationProperties;
 import com.merkle.oss.magnolia.testing.servlet.MockFilterChain;
@@ -53,12 +55,12 @@ import com.merkle.oss.magnolia.testing.servlet.ServletContextProvider;
 public class MagnoliaIntegrationTestInitializer {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public void init(final ExtensionContext extensionContext) throws Exception {
+    public void init(final Context context) throws Exception {
         final StopWatch watch = new StopWatch();
         watch.start();
         try {
             final Path appRootDir = Exceptions.wrap().get(() -> Files.createTempDirectory("magnolia-test"));
-            final GuiceComponentProvider platformComponentProvider = getPlatformComponentProvider(appRootDir, extensionContext);
+            final GuiceComponentProvider platformComponentProvider = getPlatformComponentProvider(appRootDir, context);
             final RepositoryManager repositoryManager = platformComponentProvider.getComponent(RepositoryManager.class);
             repositoryManager.init();
             final ModuleManager moduleManager = platformComponentProvider.getComponent(ModuleManager.class);
@@ -72,8 +74,8 @@ public class MagnoliaIntegrationTestInitializer {
             //ConfigLoader.JAAS_PROPERTYNAME
             System.setProperty("java.security.auth.login.config", properties.getProperty("jaas.config"));
 
-            final GuiceComponentProvider systemComponentProvider = getSystemComponentProvider(extensionContext, platformComponentProvider, properties);
-            getMainComponentProvider(extensionContext, systemComponentProvider, properties);
+            final GuiceComponentProvider systemComponentProvider = getSystemComponentProvider(context, platformComponentProvider, properties);
+            getMainComponentProvider(context, systemComponentProvider, properties);
         } catch (CreationException e) {
             throw new RuntimeException("Failed to init: " + e.getErrorMessages(), e);
         }
@@ -121,17 +123,17 @@ public class MagnoliaIntegrationTestInitializer {
         LOG.debug("Stop took {}ms", watch.getDuration().toMillis());
     }
 
-    private GuiceComponentProvider getPlatformComponentProvider(final Path appRootDir, final ExtensionContext extensionContext) throws IOException {
-        final TestMagnoliaConfigurationProperties properties = new TestMagnoliaConfigurationProperties(IntegrationTestMagnoliaConfigurationProperties.getInitialPropertySources(appRootDir, extensionContext));
+    private GuiceComponentProvider getPlatformComponentProvider(final Path appRootDir, final Context context) throws IOException {
+        final TestMagnoliaConfigurationProperties properties = new TestMagnoliaConfigurationProperties(IntegrationTestMagnoliaConfigurationProperties.getInitialPropertySources(appRootDir, context));
         final ComponentProviderConfiguration config = new ComponentProviderConfigurationBuilder().readConfiguration(List.of(
                 MagnoliaServletContextListener.DEFAULT_PLATFORM_COMPONENTS_CONFIG_LOCATION,
                 "/configuration/platform-components.xml"
         ), "platform");
 
         config.registerProvider(ServletContext.class, ServletContextProvider.class);
-        applyAnnotationComponents(extensionContext, TestConfiguration.Component.Provider.PLATFORM, config);
+        applyAnnotationComponents(context, TestConfiguration.Component.Provider.PLATFORM, config);
         config.registerInstance(MagnoliaConfigurationProperties.class, properties);
-        config.registerInstance(ExtensionContext.class, extensionContext);
+        config.registerInstance(Context.class, context);
         final GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(config);
         builder.inStage(Stage.PRODUCTION);
@@ -139,7 +141,7 @@ public class MagnoliaIntegrationTestInitializer {
         return builder.build();
     }
 
-    private GuiceComponentProvider getSystemComponentProvider(final ExtensionContext extensionContext, final GuiceComponentProvider parent, final MagnoliaConfigurationProperties properties) {
+    private GuiceComponentProvider getSystemComponentProvider(final Context context, final GuiceComponentProvider parent, final MagnoliaConfigurationProperties properties) {
         final ComponentProviderConfiguration config = merge(
                 new ComponentProviderConfigurationBuilder().readConfiguration(List.of("/configuration/system-components.xml"), "system"),
                 new ComponentProviderConfigurationBuilder().getComponentsFromModules(
@@ -147,7 +149,7 @@ public class MagnoliaIntegrationTestInitializer {
                         parent.getComponent(ModuleRegistry.class).getModuleDefinitions()
                 )
         );
-        applyAnnotationComponents(extensionContext, TestConfiguration.Component.Provider.SYSTEM, config);
+        applyAnnotationComponents(context, TestConfiguration.Component.Provider.SYSTEM, config);
         config.registerInstance(IntegrationTestMagnoliaConfigurationProperties.class, properties);
         config.registerInstance(MagnoliaConfigurationProperties.class, properties);
         final GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
@@ -157,14 +159,14 @@ public class MagnoliaIntegrationTestInitializer {
         return builder.build();
     }
 
-    private GuiceComponentProvider getMainComponentProvider(final ExtensionContext extensionContext, final GuiceComponentProvider parent, final MagnoliaConfigurationProperties properties) {
+    private GuiceComponentProvider getMainComponentProvider(final Context context, final GuiceComponentProvider parent, final MagnoliaConfigurationProperties properties) {
         final ComponentProviderConfiguration config = new ComponentProviderConfigurationBuilder().getComponentsFromModules(
                 "main",
                 parent.getComponent(ModuleRegistry.class).getModuleDefinitions()
         );
         config.registerInstance(MagnoliaConfigurationProperties.class, properties);
         config.registerProvider(LicenseManager.class, LicenseManagerProvider.class);
-        applyAnnotationComponents(extensionContext, TestConfiguration.Component.Provider.MAIN, config);
+        applyAnnotationComponents(context, TestConfiguration.Component.Provider.MAIN, config);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(config);
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
@@ -188,8 +190,8 @@ public class MagnoliaIntegrationTestInitializer {
         return merged;
     }
 
-    private void applyAnnotationComponents(final ExtensionContext extensionContext, final TestConfiguration.Component.Provider provider, final ComponentProviderConfiguration config) {
-        getComponents(extensionContext)
+    private void applyAnnotationComponents(final Context context, final TestConfiguration.Component.Provider provider, final ComponentProviderConfiguration config) {
+        getComponents(context)
                 .filter(component -> provider.equals(component.provider()))
                 .map(component -> {
                     final ImplementationConfiguration configuration = new ImplementationConfiguration<>();
@@ -202,9 +204,9 @@ public class MagnoliaIntegrationTestInitializer {
                 .forEach(config::addComponent);
     }
 
-    private Stream<TestConfiguration.Component> getComponents(final ExtensionContext extensionContext) {
-        return extensionContext.getTestMethod().map(method -> method.getAnnotation(TestConfiguration.class)).or(() ->
-                extensionContext.getTestClass().map(clazz -> clazz.getAnnotation(TestConfiguration.class))
-        ).stream().map(TestConfiguration::components).flatMap(Arrays::stream);
+    private Stream<TestConfiguration.Component> getComponents(final Context context) {
+        return context.getAnnotation(TestConfiguration.class)
+                .map(TestConfiguration::components)
+                .flatMap(Arrays::stream);
     }
 }

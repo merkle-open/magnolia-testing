@@ -4,7 +4,7 @@
 		<sv:value>testing:test</sv:value>
 	</sv:property>
 	<sv:property sv:name="jcr:uuid" sv:type="String">
-		<sv:value>af5be8b3-405f-4081-8f1d-76b808add588</sv:value>
+		<sv:value>af5be8b3-405f-4081-8f1d-76b809add588</sv:value>
 	</sv:property>
 	<sv:property sv:name="image_selection" sv:type="String">
 		<sv:value>dam</sv:value>
