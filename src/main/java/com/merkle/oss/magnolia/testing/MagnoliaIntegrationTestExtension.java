@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 import com.merkle.oss.magnolia.testing.configuration.MagnoliaIntegrationTestInitializer;
 import com.merkle.oss.magnolia.testing.repository.RepositoryUtil;
+import com.merkle.oss.magnolia.testing.suite.MagnoliaSuiteTestEngine;
 
 public class MagnoliaIntegrationTestExtension implements BeforeEachCallback, AfterEachCallback {
 	private final MagnoliaIntegrationTestInitializer magnoliaIntegrationTestInitializer = new MagnoliaIntegrationTestInitializer();
@@ -13,14 +14,18 @@ public class MagnoliaIntegrationTestExtension implements BeforeEachCallback, Aft
 	@Override
 	public void beforeEach(final ExtensionContext testContext) throws Exception {
 		final Context.TestContextWrapper context = new Context.TestContextWrapper(testContext);
-		magnoliaIntegrationTestInitializer.init(context);
-		magnoliaIntegrationTestInitializer.start(true);
+		if(!MagnoliaSuiteTestEngine.isRunningInMagnoliaTestSuite(testContext)) {
+			magnoliaIntegrationTestInitializer.init(context);
+			magnoliaIntegrationTestInitializer.start(true);
+		}
 		new RepositoryUtil().load(context);
 	}
 
 	@Override
 	public void afterEach(final ExtensionContext testContext) {
-		magnoliaIntegrationTestInitializer.stop();
-		magnoliaIntegrationTestInitializer.destroy();
+		if(!MagnoliaSuiteTestEngine.isRunningInMagnoliaTestSuite(testContext)) {
+			magnoliaIntegrationTestInitializer.stop();
+			magnoliaIntegrationTestInitializer.destroy();
+		}
 	}
 }

@@ -32,7 +32,6 @@ class SampleIntegrationTest {
         final Node node = session.getRootNode().getNode("0");
         final SomeInterface someInterface = Components.getComponent(SomeInterface.class);
         assertEquals("some value 42!", someInterface.someMethod(node));
-        session.logout();
     }
 
     @Repository(workspaces = {@Repository.Workspace(name = RepositoryConstants.WEBSITE, xml = "jcr-custom-nodetype.xml")})
@@ -42,7 +41,6 @@ class SampleIntegrationTest {
         final Node node = session.getRootNode().getNode("0");
         final SomeInterface someInterface = Components.getComponent(SomeInterface.class);
         assertEquals("some value 42!", someInterface.someMethod(node));
-        session.logout();
     }
 
     @Repository(workspaces = {@Repository.Workspace(name = "testing", xml = "jcr.xml")})
@@ -52,6 +50,5 @@ class SampleIntegrationTest {
         final Node node = session.getRootNode().getNode("0");
         final SomeInterface someInterface = Components.getComponent(SomeInterface.class);
         assertEquals("some value 42!", someInterface.someMethod(node));
-        session.logout();
     }
 }

@@ -19,7 +19,7 @@ Provides integration testing capabilities for magnolia projects.
 - Add a magnolia module descriptor in your `src/test/resources/META-INF/magnolia` directory (Bindings can differ from non-test setup).
 
 
-### [Integration Test](src/test/java/com/merkle/oss/magnolia/testing/SampleIntegrationTest.java)
+## [Integration Test](src/test/java/com/merkle/oss/magnolia/testing/SampleIntegrationTest.java)
 Creates guice context and starts all magnolia modules. Can import jcr exports (xml files) into repository using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.<br>
 There's also a `MagnoliaIntegrationBeforeAllTestExtension` which runs all tests in the same context (for better performance).
 ```java
@@ -55,7 +55,7 @@ class SampleIntegrationTest {
 }
 ```
 
-### [Guice Context Test](src/test/java/com/merkle/oss/magnolia/testing/SampleGuiceContextTest.java)
+## [Guice Context Test](src/test/java/com/merkle/oss/magnolia/testing/SampleGuiceContextTest.java)
 Only creates guice context, but doesn't start magnolia modules. Can import jcr exports (xml files) into repository, create workspaces and import nodeTypes using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.<br>
 There's also a `MagnoliaGuiceContextBeforeAllTestExtension` which runs all tests in the same context (for better performance).
 
@@ -91,9 +91,29 @@ class SampleGuiceContextTest {
     assertEquals("some value 42!", someInterface.someMethod(node));
   }
 }
-
 ```
-### Custom Magnolia properties
+
+## [Test suite](src/test/java/com/merkle/oss/magnolia/testing/IntegrationTestSuite.java)
+Since the initialization can be quite slow it is possible to create suites, where the initialization is done once before all tests are executed.<br>
+<b>NOTE:</b> While test specific repository imports are possible, test specific configuration / binding is not possible!
+
+```java
+import java.util.List;
+import com.merkle.oss.magnolia.testing.suite.MagnoliaTestSuite;
+
+@MagnoliaTestSuite(testClassProvider = IntegrationTestSuite.TestClassProvider.class)
+public class SampleTestSuite {
+  public static class TestClassProvider implements MagnoliaTestSuite.TestClassProvider {
+      @Override
+      public List<Class<?>> get() {
+          //TODO implement
+          return List.of();
+      }
+  }
+}
+```
+
+## Custom Magnolia properties
 Custom property files can be specified using the [`@TestConfiguration`](src/main/java/com/merkle/oss/magnolia/testing/configuration/TestConfiguration.java) annotation.
 
 ```java
@@ -105,7 +125,7 @@ import com.merkle.oss.magnolia.testing.configuration.TestConfiguration;
 class SampleGuiceContextTest {}
 ```
 
-#### Placeholders
+### Placeholders
 - `${resource.home}` is replaced by your projects `src/test/resources` directory.
   - e.g. `magnolia.repositories.config=${resource.home}/repositories.xml`
 - `classpath:` is replaced by any classpath resource
@@ -113,7 +133,7 @@ class SampleGuiceContextTest {}
 - `magnolia.app.rootdir` is replaced by a random generated temporary folder (for each test)
   - e.g. `magnolia.home=${magnolia.app.rootdir}`
 
-### Test specific component bindings
+## Test specific component bindings
 Test specific component bindings can be configured using the [`@TestConfiguration`](src/main/java/com/merkle/oss/magnolia/testing/configuration/TestConfiguration.java) annotation.
 
 ```java
