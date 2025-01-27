@@ -154,3 +154,27 @@ class SampleGuiceContextTest {
   }
 }
 ```
+
+## Annotation class reference
+With the `@AnnotationClassReference` annotation it is possible to reference configurations / repository imports (e.g. multiple tests can reference the same TestConfiguration)<br>
+
+```java
+import org.junit.jupiter.api.extension.ExtendWith;
+import com.merkle.oss.magnolia.testing.MagnoliaIntegrationTestExtension;
+import com.merkle.oss.magnolia.testing.configuration.TestConfiguration;
+import com.merkle.oss.magnolia.testing.repository.Repository;
+
+@TestConfiguration(...)
+@Repository(...)
+@ExtendWith(MagnoliaIntegrationTestExtension.class)
+public abstract class AbstractIntegrationTest {}
+```
+
+```java
+import com.merkle.oss.magnolia.testing.configuration.AnnotationClassReference;
+import com.merkle.oss.magnolia.testing.suite.MagnoliaTestSuite;
+
+@MagnoliaTestSuite(testClassProvider =...)
+@AnnotationClassReference(AbstractIntegrationTest.class)
+public class IntegrationTestSuite {}
+```

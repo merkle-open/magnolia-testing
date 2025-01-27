@@ -7,13 +7,16 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import com.merkle.oss.magnolia.testing.configuration.AnnotationClassReference;
+
 public interface Context {
     Class<?> getClazz();
     Optional<Method> getMethod();
 
     default <T extends Annotation> Stream<T> getAnnotation(final Class<T> annotationClass) {
+        final Class<?> referencedClass = Optional.ofNullable(getClazz().getAnnotation(AnnotationClassReference.class)).map(AnnotationClassReference::value).orElse(null);
         return Stream
-                .of(getMethod(), Optional.of(getClazz()))
+                .of(getMethod(), Optional.of(referencedClass != null ? referencedClass : getClazz()))
                 .map(method -> method.map(m -> m.getAnnotation(annotationClass)))
                 .flatMap(Optional::stream);
     }
