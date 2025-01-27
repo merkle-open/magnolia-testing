@@ -14,6 +14,7 @@ import org.junit.platform.engine.support.discovery.EngineDiscoveryRequestResolve
 
 public class MagnoliaSuiteTestEngine implements TestEngine {
 	static final String IS_RUNNING_IN_MAGNOLIA_TEST_SUITE_CONFIGURATION_PROPERTY_NAME = "isRunningInMagnoliaTestSuite";
+	static final String IS_MAGNOLIA_TEST_SUITE_INITIALIZE_MAGNOLIA_PROPERTY_NAME = "isMagnoliaTestSuiteInitializeMagnolia";
 	final EngineDiscoveryRequestResolver<Descriptor> resolver = EngineDiscoveryRequestResolver.<MagnoliaSuiteTestEngine.Descriptor>builder()
 			.addClassContainerSelectorResolver(testClass -> findAnnotation(testClass, MagnoliaTestSuite.class).isPresent())
 			.addSelectorResolver(context -> new MagnoliaTestSuiteSelectorResolver())
@@ -42,8 +43,14 @@ public class MagnoliaSuiteTestEngine implements TestEngine {
 		return Descriptor.ID;
 	}
 
-	public static boolean isRunningInMagnoliaTestSuite(final ExtensionContext context) {
+	public static boolean isRunningInSuite(final ExtensionContext context) {
 		return context.getConfigurationParameter(MagnoliaSuiteTestEngine.IS_RUNNING_IN_MAGNOLIA_TEST_SUITE_CONFIGURATION_PROPERTY_NAME)
+				.map("true"::equals)
+				.orElse(false);
+	}
+
+	public static boolean isInitializeMagnolia(final ExtensionContext context) {
+		return context.getConfigurationParameter(MagnoliaSuiteTestEngine.IS_MAGNOLIA_TEST_SUITE_INITIALIZE_MAGNOLIA_PROPERTY_NAME)
 				.map("true"::equals)
 				.orElse(false);
 	}

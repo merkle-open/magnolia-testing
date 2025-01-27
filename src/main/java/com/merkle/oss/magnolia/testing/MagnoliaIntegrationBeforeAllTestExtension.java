@@ -14,7 +14,7 @@ public class MagnoliaIntegrationBeforeAllTestExtension implements BeforeAllCallb
 	@Override
 	public void beforeAll(final ExtensionContext testContext) throws Exception {
 		final Context.TestContextWrapper context = new Context.TestContextWrapper(testContext);
-		if(!MagnoliaSuiteTestEngine.isRunningInMagnoliaTestSuite(testContext)) {
+		if(!MagnoliaSuiteTestEngine.isInitializeMagnolia(testContext)) {
 			magnoliaIntegrationTestInitializer.init(context);
 			magnoliaIntegrationTestInitializer.start(true);
 		}
@@ -23,7 +23,7 @@ public class MagnoliaIntegrationBeforeAllTestExtension implements BeforeAllCallb
 
 	@Override
 	public void afterAll(final ExtensionContext testContext) {
-		if(!MagnoliaSuiteTestEngine.isRunningInMagnoliaTestSuite(testContext)) {
+		if(!MagnoliaSuiteTestEngine.isInitializeMagnolia(testContext)) {
 			magnoliaIntegrationTestInitializer.stop();
 			magnoliaIntegrationTestInitializer.destroy();
 		}

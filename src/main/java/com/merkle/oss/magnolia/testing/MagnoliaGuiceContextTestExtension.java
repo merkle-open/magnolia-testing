@@ -14,7 +14,7 @@ public class MagnoliaGuiceContextTestExtension implements BeforeEachCallback, Af
 	@Override
 	public void beforeEach(final ExtensionContext testContext) throws Exception {
 		final Context.TestContextWrapper context = new Context.TestContextWrapper(testContext);
-		if(!MagnoliaSuiteTestEngine.isRunningInMagnoliaTestSuite(testContext)) {
+		if(!MagnoliaSuiteTestEngine.isInitializeMagnolia(testContext)) {
 			magnoliaIntegrationTestInitializer.init(context);
 		}
 		new RepositoryUtil().load(context);
@@ -23,7 +23,7 @@ public class MagnoliaGuiceContextTestExtension implements BeforeEachCallback, Af
 
 	@Override
 	public void afterEach(final ExtensionContext testContext) {
-		if(!MagnoliaSuiteTestEngine.isRunningInMagnoliaTestSuite(testContext)) {
+		if(!MagnoliaSuiteTestEngine.isInitializeMagnolia(testContext)) {
 			magnoliaIntegrationTestInitializer.destroy();
 		}
 	}

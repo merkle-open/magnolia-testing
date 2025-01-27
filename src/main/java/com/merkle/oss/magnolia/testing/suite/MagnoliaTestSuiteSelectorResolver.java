@@ -50,6 +50,7 @@ class MagnoliaTestSuiteSelectorResolver implements SelectorResolver {
         final LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .configurationParameter(JupiterConfiguration.PARALLEL_EXECUTION_ENABLED_PROPERTY_NAME, Boolean.toString(!testSuite.initializeMagnolia()))
                 .configurationParameter(MagnoliaSuiteTestEngine.IS_RUNNING_IN_MAGNOLIA_TEST_SUITE_CONFIGURATION_PROPERTY_NAME, "true")
+                .configurationParameter(MagnoliaSuiteTestEngine.IS_MAGNOLIA_TEST_SUITE_INITIALIZE_MAGNOLIA_PROPERTY_NAME, Boolean.toString(testSuite.initializeMagnolia()))
                 .selectors(testClasses.stream().map(DiscoverySelectors::selectClass).toList())
                 .selectors(DiscoverySelectors.selectUniqueId(uniqueId))
                 .build();
