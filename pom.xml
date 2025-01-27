@@ -37,20 +37,20 @@
 
   <properties>
     <!--	mvn versions:display-property-updates	-->
-    <magnolia.version>6.3.1</magnolia.version>
+    <magnolia.version>6.3.4</magnolia.version>
     <magnolia.license.version>2.0.0</magnolia.license.version>
     <jsr305.nullable.version>3.0.2</jsr305.nullable.version>
-    <junit.version>5.11.1</junit.version>
-    <mockito.version>5.14.0</mockito.version>
+    <junit.version>5.11.4</junit.version>
+    <mockito.version>5.15.2</mockito.version>
     <slf4j.bridge.version>2.0.16</slf4j.bridge.version>
 
     <!-- Maven Plugins -->
     <mvn.compiler.plugin.version>3.13.0</mvn.compiler.plugin.version>
     <mvn.source.plugin.version>3.3.0</mvn.source.plugin.version>
-    <mvn.javadoc.version>3.8.0</mvn.javadoc.version>
+    <mvn.javadoc.version>3.11.2</mvn.javadoc.version>
     <mvn.gpg.plugin.version>3.2.5</mvn.gpg.plugin.version>
     <mvn.sonatype.publishing.plugin.version>0.5.0</mvn.sonatype.publishing.plugin.version>
-    <mvn.surefire.plugin.version>3.5.0</mvn.surefire.plugin.version>
+    <mvn.surefire.plugin.version>3.5.2</mvn.surefire.plugin.version>
 
     <javaVersion>17</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
