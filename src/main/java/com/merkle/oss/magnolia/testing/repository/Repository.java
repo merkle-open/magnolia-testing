@@ -19,7 +19,7 @@ public @interface Repository {
 		String name();
 		String xml();
 		String repositoryId() default "magnolia";
-		boolean create() default false;
+		boolean clear() default true;
 		String path() default "/";
 		int importUUIDBehavior() default ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW;
 	}

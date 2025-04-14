@@ -54,7 +54,7 @@ class SampleGuiceContextTest {
         session.logout();
     }
 
-    @Repository(workspaces = {@Repository.Workspace(name = "testing", xml = "jcr.xml", create = true)})
+    @Repository(workspaces = {@Repository.Workspace(name = "testing", xml = "jcr.xml")})
     @Test
     void customWorkspace() throws RepositoryException {
         final Session session = MgnlContext.getJCRSession("testing");
