@@ -1,8 +1,8 @@
 package com.merkle.oss.magnolia.testing.servlet;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 public class MockFilterChain implements FilterChain {
     @Override
