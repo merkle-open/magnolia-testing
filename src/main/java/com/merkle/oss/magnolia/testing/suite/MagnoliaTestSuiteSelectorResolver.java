@@ -54,7 +54,7 @@ class MagnoliaTestSuiteSelectorResolver implements SelectorResolver {
                 .selectors(testClasses.stream().map(DiscoverySelectors::selectClass).toList())
                 .selectors(DiscoverySelectors.selectUniqueId(uniqueId))
                 .build();
-        final LauncherDiscoveryResult discoveryResult = engineDiscoveryOrchestrator.discover(request, EngineDiscoveryOrchestrator.Phase.DISCOVERY, uniqueId);
+        final LauncherDiscoveryResult discoveryResult = engineDiscoveryOrchestrator.discover(request, uniqueId);
         final MagnoliaTestSuiteDescriptor testSuiteDescriptor = new MagnoliaTestSuiteDescriptor(uniqueId, testSuite.failIfNoTests(), testSuite.initializeMagnolia(), testSuiteClass, discoveryResult);
 
         discoveryResult.getTestEngines()

@@ -1,5 +1,8 @@
 package com.merkle.oss.magnolia.testing.suite;
 
+
+import static org.junit.platform.engine.support.store.NamespacedHierarchicalStore.CloseAction.closeAutoCloseables;
+
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +18,8 @@ import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
 import org.junit.platform.engine.support.hierarchical.Node;
 import org.junit.platform.engine.support.hierarchical.OpenTest4JAwareThrowableCollector;
 import org.junit.platform.engine.support.hierarchical.ThrowableCollector;
+import org.junit.platform.engine.support.store.Namespace;
+import org.junit.platform.engine.support.store.NamespacedHierarchicalStore;
 import org.junit.platform.launcher.core.EngineExecutionOrchestrator;
 import org.junit.platform.launcher.core.LauncherDiscoveryResult;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
@@ -55,7 +60,7 @@ class MagnoliaTestSuiteDescriptor extends AbstractTestDescriptor implements Node
         return Node.super.before(context);
     }
 
-    public void execute(final EngineExecutionListener parentEngineExecutionListener) {
+    public void execute(final EngineExecutionListener parentEngineExecutionListener, final NamespacedHierarchicalStore<Namespace> store) {
         parentEngineExecutionListener.executionStarted(this);
         final ThrowableCollector throwableCollector = new OpenTest4JAwareThrowableCollector();
         final Context context = new Context() {
@@ -74,7 +79,7 @@ class MagnoliaTestSuiteDescriptor extends AbstractTestDescriptor implements Node
             throwableCollector.execute(() -> magnoliaIntegrationTestInitializer.start(true));
         }
         executeMethods(AnnotationUtils.findAnnotatedMethods(testSuiteClass, BeforeSuite.class, ReflectionUtils.HierarchyTraversalMode.TOP_DOWN), throwableCollector);
-        final TestExecutionSummary summary = executeTests(parentEngineExecutionListener);
+        final TestExecutionSummary summary = executeTests(parentEngineExecutionListener, store);
         if(initializeMagnolia) {
             executeMethods(AnnotationUtils.findAnnotatedMethods(testSuiteClass, BeforeMagnoliaStop.class, ReflectionUtils.HierarchyTraversalMode.TOP_DOWN), throwableCollector);
             throwableCollector.execute(magnoliaIntegrationTestInitializer::stop);
@@ -85,9 +90,11 @@ class MagnoliaTestSuiteDescriptor extends AbstractTestDescriptor implements Node
         parentEngineExecutionListener.executionFinished(this, testExecutionResult);
     }
 
-    private TestExecutionSummary executeTests(final EngineExecutionListener parentEngineExecutionListener) {
+    private TestExecutionSummary executeTests(final EngineExecutionListener parentEngineExecutionListener, final NamespacedHierarchicalStore<Namespace> store) {
         final SummaryGeneratingListener listener = new SummaryGeneratingListener();
-        executionOrchestrator.execute(discoveryResult, parentEngineExecutionListener, listener);
+        try (NamespacedHierarchicalStore<Namespace> requestLevelStore = new NamespacedHierarchicalStore<>(store, closeAutoCloseables())) {
+            executionOrchestrator.execute(discoveryResult, parentEngineExecutionListener, listener, requestLevelStore);
+        }
         return listener.getSummary();
     }
 

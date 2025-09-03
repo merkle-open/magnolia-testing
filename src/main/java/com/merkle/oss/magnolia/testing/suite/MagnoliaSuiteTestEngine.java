@@ -11,6 +11,8 @@ import org.junit.platform.engine.TestEngine;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.EngineDescriptor;
 import org.junit.platform.engine.support.discovery.EngineDiscoveryRequestResolver;
+import org.junit.platform.engine.support.store.Namespace;
+import org.junit.platform.engine.support.store.NamespacedHierarchicalStore;
 
 public class MagnoliaSuiteTestEngine implements TestEngine {
 	static final String IS_RUNNING_IN_MAGNOLIA_TEST_SUITE_CONFIGURATION_PROPERTY_NAME = "isRunningInMagnoliaTestSuite";
@@ -32,10 +34,11 @@ public class MagnoliaSuiteTestEngine implements TestEngine {
 	public void execute(final ExecutionRequest request) {
 		final Descriptor descriptor = (Descriptor) request.getRootTestDescriptor();
 		final EngineExecutionListener engineExecutionListener = request.getEngineExecutionListener();
-		descriptor.getChildren()
+        final NamespacedHierarchicalStore<Namespace> store = request.getStore();
+        descriptor.getChildren()
 				.stream()
 				.map(MagnoliaTestSuiteDescriptor.class::cast)
-				.forEach(suiteTestDescriptor -> suiteTestDescriptor.execute(engineExecutionListener));
+				.forEach(suiteTestDescriptor -> suiteTestDescriptor.execute(engineExecutionListener, store));
 	}
 
 	@Override

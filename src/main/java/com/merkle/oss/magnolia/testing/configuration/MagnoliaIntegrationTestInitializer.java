@@ -1,5 +1,6 @@
 package com.merkle.oss.magnolia.testing.configuration;
 
+import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.cms.core.SystemProperty;
 import info.magnolia.cms.filters.MgnlMainFilter;
 import info.magnolia.cms.util.CustomFilterConfig;
@@ -28,7 +29,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.LogManager;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,7 +39,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +47,7 @@ import com.google.inject.Stage;
 import com.machinezoo.noexception.Exceptions;
 import com.merkle.oss.magnolia.testing.Context;
 import com.merkle.oss.magnolia.testing.module.LicenseManagerProvider;
+import com.merkle.oss.magnolia.testing.module.TestServerConfigurationProvider;
 import com.merkle.oss.magnolia.testing.properties.IntegrationTestMagnoliaConfigurationProperties;
 import com.merkle.oss.magnolia.testing.servlet.MockFilterChain;
 import com.merkle.oss.magnolia.testing.servlet.ServletContextProvider;
@@ -166,6 +166,7 @@ public class MagnoliaIntegrationTestInitializer {
         );
         config.registerInstance(MagnoliaConfigurationProperties.class, properties);
         config.registerProvider(LicenseManager.class, LicenseManagerProvider.class);
+        config.registerProvider(ServerConfiguration.class, TestServerConfigurationProvider.class);
         applyAnnotationComponents(context, TestConfiguration.Component.Provider.MAIN, config);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(config);

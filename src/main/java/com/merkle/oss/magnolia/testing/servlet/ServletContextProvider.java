@@ -31,6 +31,7 @@ public interface ServletContextProvider extends Provider<ServletContext> {
         @Override
         public HttpServletRequest getRequest() {
             final HttpServletRequest mock = Mockito.mock(HttpServletRequest.class);
+            Mockito.doReturn("127.0.0.1").when(mock).getRemoteAddr();
             Mockito.doReturn("/mock-uri").when(mock).getRequestURI();
             Mockito.doReturn("/mock-uri").when(mock).getServletPath();
             Mockito.doReturn("/").when(mock).getContextPath();
