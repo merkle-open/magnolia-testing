@@ -35,8 +35,8 @@ import java.util.stream.Stream;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;

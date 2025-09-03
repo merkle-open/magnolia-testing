@@ -37,7 +37,7 @@
 
   <properties>
     <!--	mvn versions:display-property-updates	-->
-    <magnolia.version>6.3.14</magnolia.version>
+    <magnolia.version>6.4.0-beta1</magnolia.version>
     <magnolia.license.version>2.0.1</magnolia.license.version>
     <junit.version>5.13.4</junit.version>
     <junit.engine.version>5.13.1</junit.engine.version>
