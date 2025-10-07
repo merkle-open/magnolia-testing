@@ -11,6 +11,7 @@ import org.junit.jupiter.engine.execution.JupiterEngineExecutionContext;
 import org.junit.platform.commons.JUnitException;
 import org.junit.platform.commons.util.AnnotationUtils;
 import org.junit.platform.commons.util.ReflectionUtils;
+import org.junit.platform.engine.CancellationToken;
 import org.junit.platform.engine.EngineExecutionListener;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.UniqueId;
@@ -93,7 +94,7 @@ class MagnoliaTestSuiteDescriptor extends AbstractTestDescriptor implements Node
     private TestExecutionSummary executeTests(final EngineExecutionListener parentEngineExecutionListener, final NamespacedHierarchicalStore<Namespace> store) {
         final SummaryGeneratingListener listener = new SummaryGeneratingListener();
         try (NamespacedHierarchicalStore<Namespace> requestLevelStore = new NamespacedHierarchicalStore<>(store, closeAutoCloseables())) {
-            executionOrchestrator.execute(discoveryResult, parentEngineExecutionListener, listener, requestLevelStore);
+            executionOrchestrator.execute(discoveryResult, parentEngineExecutionListener, listener, requestLevelStore, CancellationToken.disabled());
         }
         return listener.getSummary();
     }
