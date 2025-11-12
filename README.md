@@ -13,7 +13,7 @@ Provides integration testing capabilities for magnolia projects.
   <dependency>
       <groupId>com.merkle.oss.magnolia</groupId>
       <artifactId>magnolia-testing</artifactId>
-      <version>0.0.14</version>
+      <version>0.1.0</version>
   </dependency>
   ```
 - Add a magnolia module descriptor in your `src/test/resources/META-INF/magnolia` directory (Bindings can differ from non-test setup).
