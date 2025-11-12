@@ -6,7 +6,7 @@
 
   <groupId>com.merkle.oss.magnolia</groupId>
   <artifactId>magnolia-testing</artifactId>
-  <version>0.0.15-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
   <description>Magnolia testing</description>
@@ -37,7 +37,7 @@
 
   <properties>
     <!--	mvn versions:display-property-updates	-->
-    <magnolia.version>6.3.15</magnolia.version>
+    <magnolia.version>6.4.0</magnolia.version>
     <magnolia.license.version>2.0.1</magnolia.license.version>
     <junit.version>6.0.0</junit.version>
     <junit.engine.version>5.13.1</junit.engine.version>
