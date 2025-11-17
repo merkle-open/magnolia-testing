@@ -18,6 +18,11 @@ Provides integration testing capabilities for magnolia projects.
   ```
 - Add a magnolia module descriptor in your `src/test/resources/META-INF/magnolia` directory (Bindings can differ from non-test setup).
 
+### Cluster config (only necessary for shared/cluster repo setup )
+configure the following properties (see [Custom Magnolia properties](#Custom-Magnolia-properties))
+```properties
+magnolia.repositories.config=classpath:/repository/repositories-cluster.xml
+```
 
 ## [Integration Test](src/test/java/com/merkle/oss/magnolia/testing/SampleIntegrationTest.java)
 Creates guice context and starts all magnolia modules. Can import jcr exports (xml files) into repository using [@Repository](src/main/java/com/merkle/oss/magnolia/testing/repository/Repository.java) annotation.<br>
