@@ -22,18 +22,25 @@ public class TestServerConfigurationProvider implements Provider<ServerConfigura
     @Override
     public ServerConfiguration get() {
         try {
-            final Node2BeanTransformerImpl transformer = new Node2BeanTransformerImpl(Components.getComponent(PreConfiguredBeanUtils2.class), Components.getComponent(BeanTypeResolver.class)) {
-                @Override
-                public Object newBeanInstance(TransformationState state, Map<String, Object> properties, ComponentProvider componentProvider) {
-                    return new ServerConfiguration();
-                }
-            };
-            final Node node = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/server");
-            return (ServerConfiguration) Components.getComponent(Node2BeanProcessor.class).toBean(node, false, transformer, Components.getComponentProvider());
+            if(MgnlContext.hasInstance()) {
+                final Node2BeanTransformerImpl transformer = new Node2BeanTransformerImpl(Components.getComponent(PreConfiguredBeanUtils2.class), Components.getComponent(BeanTypeResolver.class)) {
+                    @Override
+                    public Object newBeanInstance(TransformationState state, Map<String, Object> properties, ComponentProvider componentProvider) {
+                        return new ServerConfiguration();
+                    }
+                };
+                final Node node = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/server");
+                return (ServerConfiguration) Components.getComponent(Node2BeanProcessor.class).toBean(node, false, transformer, Components.getComponentProvider());
+            }
         } catch (Exception e) {
-            final ServerConfiguration config = new ServerConfiguration();
-            config.setInstanceUuid(UUID.randomUUID().toString());
-            return config;
+            // ignore, return fallback
         }
+        return getFallbackConfig();
+    }
+
+    private ServerConfiguration getFallbackConfig() {
+        final ServerConfiguration config = new ServerConfiguration();
+        config.setInstanceUuid(UUID.randomUUID().toString());
+        return config;
     }
 }
