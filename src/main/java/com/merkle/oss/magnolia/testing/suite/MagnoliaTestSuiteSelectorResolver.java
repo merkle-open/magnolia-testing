@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Constants;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.engine.config.JupiterConfiguration;
 import org.junit.platform.commons.util.AnnotationUtils;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.engine.UniqueId;
@@ -48,7 +48,7 @@ class MagnoliaTestSuiteSelectorResolver implements SelectorResolver {
         final List<Class<?>> testClasses = testClassProvider.get().stream().filter(this::hasTests).toList();
 
         final LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
-                .configurationParameter(JupiterConfiguration.PARALLEL_EXECUTION_ENABLED_PROPERTY_NAME, Boolean.toString(!testSuite.initializeMagnolia()))
+                .configurationParameter(Constants.PARALLEL_EXECUTION_ENABLED_PROPERTY_NAME, Boolean.toString(!testSuite.initializeMagnolia()))
                 .configurationParameter(MagnoliaSuiteTestEngine.IS_RUNNING_IN_MAGNOLIA_TEST_SUITE_CONFIGURATION_PROPERTY_NAME, "true")
                 .configurationParameter(MagnoliaSuiteTestEngine.IS_MAGNOLIA_TEST_SUITE_INITIALIZE_MAGNOLIA_PROPERTY_NAME, Boolean.toString(testSuite.initializeMagnolia()))
                 .selectors(testClasses.stream().map(DiscoverySelectors::selectClass).toList())
