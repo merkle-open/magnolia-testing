@@ -57,7 +57,7 @@ class MagnoliaTestSuiteDescriptor extends AbstractTestDescriptor implements Node
     }
 
     @Override
-    public JupiterEngineExecutionContext before(JupiterEngineExecutionContext context) throws Exception {
+    public JupiterEngineExecutionContext before(final JupiterEngineExecutionContext context) throws Exception {
         return Node.super.before(context);
     }
 
