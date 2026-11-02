@@ -16,6 +16,7 @@ import org.junit.platform.engine.EngineExecutionListener;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.UniqueId;
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
+import org.junit.platform.engine.support.descriptor.ClassSource;
 import org.junit.platform.engine.support.hierarchical.Node;
 import org.junit.platform.engine.support.hierarchical.OpenTest4JAwareThrowableCollector;
 import org.junit.platform.engine.support.hierarchical.ThrowableCollector;
@@ -44,7 +45,7 @@ class MagnoliaTestSuiteDescriptor extends AbstractTestDescriptor implements Node
             final Class<?> testSuiteClass,
             final LauncherDiscoveryResult discoveryResult
     ) {
-        super(uniqueId, "MagnoliaTestSuite");
+        super(uniqueId, "MagnoliaTestSuite", ClassSource.from(testSuiteClass));
         this.failIfNoTests = failIfNoTests;
         this.initializeMagnolia = initializeMagnolia;
         this.testSuiteClass = testSuiteClass;
