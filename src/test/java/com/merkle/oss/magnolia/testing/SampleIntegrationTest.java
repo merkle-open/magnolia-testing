@@ -56,11 +56,26 @@ class SampleIntegrationTest {
         assertEquals("some value 42!", someInterface.someMethod(node));
     }
 
-    @Request(user = @Request.User(username = "tester", password = "tester"))
+    /**
+     * see {@link com.merkle.oss.magnolia.testing.configuration.setup.ConfigureTestUsersTask}
+     */
+    @Request(user = @Request.User(username = "tester", password = "testerPass"))
     @Test
-    void customUser() throws RepositoryException {
+    void customUser() {
         final User user = MgnlContext.getUser();
-        assertEquals("some value 42!", user.getName());
-        assertEquals("some value 42!", user.getPassword());
+        assertEquals("tester", user.getName());
+    }
+
+    @Request(user = @Request.User(username = "anonymous", password = ""))
+    @Test
+    void getAnonymousUser() {
+        final User user = MgnlContext.getUser();
+        assertEquals("anonymous", user.getName());
+    }
+
+    @Test
+    void getDefaultUser() {
+        final User user = MgnlContext.getUser();
+        assertEquals("superuser", user.getName());
     }
 }

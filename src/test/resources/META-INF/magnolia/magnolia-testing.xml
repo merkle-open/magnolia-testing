@@ -5,6 +5,7 @@
 	<displayName>Magnolia testing</displayName>
 	<description>magnolia testing oss repo</description>
 	<class>com.merkle.oss.magnolia.testing.SomeModule</class>
+	<versionHandler>com.merkle.oss.magnolia.testing.configuration.TestingTestModuleVersionHandler</versionHandler>
 	<version>0.0.1</version>
 
 	<components>

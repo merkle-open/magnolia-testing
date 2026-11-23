@@ -1,8 +1,10 @@
 package com.merkle.oss.magnolia.testing.servlet;
 
+import info.magnolia.cms.security.AuthenticationChallengeHandler;
 import info.magnolia.cms.security.auth.login.BasicLogin;
 import info.magnolia.cms.security.auth.login.LoginFilter;
 import info.magnolia.cms.security.auth.login.LoginHandler;
+import info.magnolia.cms.security.userprofile.UserProfileManager;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractRepositoryTask;
 import info.magnolia.repository.RepositoryConstants;
@@ -14,12 +16,15 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 public class TestLoginFilter extends LoginFilter {
 
     @Inject
-    public TestLoginFilter() {}
+    public TestLoginFilter(final Provider<UserProfileManager> userProfileManager, final Provider<AuthenticationChallengeHandler> challengeHandler) {
+        super(userProfileManager, challengeHandler);
+    }
 
     @Override
     public Collection<LoginHandler> getLoginHandlers() {
