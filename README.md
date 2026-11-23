@@ -183,3 +183,28 @@ import com.merkle.oss.magnolia.testing.suite.MagnoliaTestSuite;
 @AnnotationClassReference(AbstractIntegrationTest.class)
 public class IntegrationTestSuite {}
 ```
+
+## Custom request
+Request attributes can be mocked via annotation on either the integration test class or the method. 
+```java
+import com.merkle.oss.magnolia.testing.servlet.Request;
+
+@Request(user =@Request.User(username="tester", password ="testerPass"))
+class SampleIntegrationTest {
+    ...
+}
+```
+
+```java
+import com.merkle.oss.magnolia.testing.servlet.Request;
+
+@Request(headers = {
+        @Request.Header(key = "someKey", value = "someValue"),
+        @Request.Header(key = "someOtherKey", value = "someValue"),
+        @Request.Header(key = "someOtherKey", value = "someValue2")
+})
+@Test
+void someTest() {
+    ...
+}
+```

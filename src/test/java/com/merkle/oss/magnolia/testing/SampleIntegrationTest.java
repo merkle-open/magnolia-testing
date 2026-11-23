@@ -8,6 +8,9 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 
+import java.util.Collections;
+import java.util.Set;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -18,6 +21,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import com.merkle.oss.magnolia.testing.configuration.TestConfiguration;
 import com.merkle.oss.magnolia.testing.repository.Repository;
 import com.merkle.oss.magnolia.testing.servlet.Request;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @ExtendWith(MagnoliaIntegrationTestExtension.class)
 @TestConfiguration(magnoliaProperties = { "/magnolia-testing.properties" })
@@ -77,5 +82,21 @@ class SampleIntegrationTest {
     void getDefaultUser() {
         final User user = MgnlContext.getUser();
         assertEquals("superuser", user.getName());
+    }
+
+    @Request(headers = {
+            @Request.Header(key = "someKey", value = "someValue"),
+            @Request.Header(key = "someOtherKey", value = "someValue"),
+            @Request.Header(key = "someOtherKey", value = "someValue2")
+    }, user = @Request.User(username = "tester", password = "testerPass"))
+    @Test
+    void customHeader() {
+        final HttpServletRequest request = MgnlContext.getWebContext().getRequest();
+        assertEquals("someValue", request.getHeader("someKey"));
+        assertEquals("someValue", request.getHeader("someKey"));
+        assertEquals(Set.of("someValue", "someValue2"), Set.copyOf(Collections.list(request.getHeaders("someOtherKey"))));
+
+        final User user = MgnlContext.getUser(); //since Authorization is also a header test this as well
+        assertEquals("tester", user.getName());
     }
 }
