@@ -20,6 +20,7 @@ import com.merkle.oss.magnolia.testing.repository.Repository;
         @Repository.Workspace(name = RepositoryConstants.WEBSITE, xml = "jcr.xml")
 })
 @ExtendWith(MagnoliaGuiceContextTestExtension.class)
+@TestConfiguration(magnoliaProperties = { "/magnolia-testing.properties" })
 class SampleGuiceContextTest {
 
     @Test
