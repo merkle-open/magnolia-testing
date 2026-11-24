@@ -16,8 +16,9 @@ public class MagnoliaIntegrationTestExtension implements BeforeEachCallback, Aft
 		final Context.TestContextWrapper context = new Context.TestContextWrapper(testContext);
 		if(!MagnoliaSuiteTestEngine.isInitializeMagnolia(testContext)) {
 			magnoliaIntegrationTestInitializer.init(context);
-			magnoliaIntegrationTestInitializer.start(true);
+			magnoliaIntegrationTestInitializer.start();
 		}
+		magnoliaIntegrationTestInitializer.executeFilterChain(context);
 		new RepositoryUtil().load(context);
 	}
 

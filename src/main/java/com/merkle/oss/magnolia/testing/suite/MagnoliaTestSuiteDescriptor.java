@@ -78,7 +78,7 @@ class MagnoliaTestSuiteDescriptor extends AbstractTestDescriptor implements Node
         if(initializeMagnolia) {
             executeMethods(AnnotationUtils.findAnnotatedMethods(testSuiteClass, BeforeMagnoliaStart.class, ReflectionUtils.HierarchyTraversalMode.TOP_DOWN), throwableCollector);
             throwableCollector.execute(() -> magnoliaIntegrationTestInitializer.init(context));
-            throwableCollector.execute(() -> magnoliaIntegrationTestInitializer.start(true));
+            throwableCollector.execute(magnoliaIntegrationTestInitializer::start);
         }
         executeMethods(AnnotationUtils.findAnnotatedMethods(testSuiteClass, BeforeSuite.class, ReflectionUtils.HierarchyTraversalMode.TOP_DOWN), throwableCollector);
         final TestExecutionSummary summary = executeTests(parentEngineExecutionListener, store);

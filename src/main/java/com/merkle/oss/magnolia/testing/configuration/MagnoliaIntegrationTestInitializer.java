@@ -88,7 +88,7 @@ public class MagnoliaIntegrationTestInitializer {
         MgnlContext.setInstance(null);
     }
 
-    public void start(final boolean executeFilterChain) throws ModuleManagementException, ServletException, IOException {
+    public void start() throws ModuleManagementException, ServletException {
         final StopWatch watch = new StopWatch();
         watch.start();
         System.setProperty("productionMode", "true"); //com.vaadin.server.Constants.SERVLET_PARAMETER_PRODUCTION_MODE
@@ -98,23 +98,20 @@ public class MagnoliaIntegrationTestInitializer {
         moduleManager.checkForInstallOrUpdates();
         moduleManager.performInstallOrUpdate();
         moduleManager.startModules();
-        if(executeFilterChain) {
-            executeFilterChain();
-        }
+        Components.getComponent(MgnlMainFilter.class).init(new CustomFilterConfig("magnoliaFilterChain", Components.getComponent(ServletContext.class)));
         watch.stop();
         LOG.debug("Start took {}ms", watch.getDuration().toMillis());
     }
 
-    private void executeFilterChain() throws ServletException, IOException {
-        final ServletContextProvider servletContextProvider = Components.getComponent(ServletContextProvider.class);
-        final MgnlMainFilter mainFilter = new MgnlMainFilter();
-        mainFilter.init(new CustomFilterConfig("magnoliaFilterChain", Components.getComponent(ServletContext.class)));
-        mainFilter.doFilter(servletContextProvider.getRequest(), servletContextProvider.getResponse(), new MockFilterChain());
+    public void executeFilterChain(final Context context) throws ServletException, IOException {
+        final ServletContextProvider servletContextProvider = Components.newInstance(ServletContextProvider.class, context);
+        Components.getComponent(MgnlMainFilter.class).doFilter(servletContextProvider.getRequest(), servletContextProvider.getResponse(), new MockFilterChain());
     }
 
     public void stop() {
         final StopWatch watch = new StopWatch();
         watch.start();
+        Components.getComponent(MgnlMainFilter.class).destroy();
         final ModuleManager moduleManager = Components.getComponent(ModuleManager.class);
         moduleManager.stopModules();
         ((AbstractSystemContext) Components.getComponent(SystemContext.class)).getRepositoryStrategy().release();
@@ -134,6 +131,7 @@ public class MagnoliaIntegrationTestInitializer {
         applyAnnotationComponents(context, TestConfiguration.Component.Provider.PLATFORM, config);
         config.registerInstance(MagnoliaConfigurationProperties.class, properties);
         config.registerInstance(Context.class, context);
+        config.registerInstance(MgnlMainFilter.class, new MgnlMainFilter());
         final GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(config);
         builder.inStage(Stage.PRODUCTION);
